@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="./styles.navbar.css"/> -->
+
+    <style>
+        body {
+    margin: 0px;
+  }
+  #navbar {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: black;
+    color: white;
+  }
+  a {
+    text-decoration: none;
+    color: white;
+  }
+  #logo {
+    width: 5%;
+    text-align: right;
+  }
+  #logo img {
+    width: 30%;
+    border-radius: 80%;
+    padding: 9px;
+  }
+  #profile img {
+    border-radius: 80%;
+    width: 50%;
+    height: 35px;
+    padding-top: 7%;
+  }
+  #search {
+    width: 10%;
+    padding: 12px;
+  }
+  ul {
+    padding-left: 0px;
+  }
+  
+  #list li {
+    display: inline;
+    margin-right: 2%;
+  }
+  #options {
+    width: 75%;
+  }
+  #profile {
+    width: 5%;
+  }
+  
+  
+  #main{
+  
+  
+  padding: 3%;
+  }
+  #home {
+    display: flex;
+    gap : 3%;
+  }
+ #profileinfo{
+   width:30%;
+   margin-left: 20px;
+ }
+ #profileinfo>img{
+   border-radius: 50%;
+   height:200px;
+   width:200px;
+ }
+ #profileinfo>div{
+   display: flex;
+   gap:3%;
+ }
+ #one,#two{
+   display: flex;
+   gap:3%;
+ }
+ #one>button{
+   border-radius: 10px;
+   width:90px;
+   height:20px;
+   margin-top: 20px;;
+ }
+ #two>button{
+   font-size:28px;
+   width:90px;
+   height:40px;
+   border-radius: 20px;
+   margin-left: 90%;
+ }
+
+    
+    </style>
+</head>
+<body>
+   
+
+    <div id="navbar">
+
+
+    </div>
+    <div id="home">
+        <div id="profileinfo">
+
+        </div>
+        <div id="repo">
+
+        </div>
+
+    </div>
+</body>
+</html>
+
+<script type="module" >
+
+    import header from "./components/header.js"
+
+    //console.log(header);
+
+    let navbar = document.querySelector("#navbar");
+
+    navbar.innerHTML = header();
+
+    let input_box = document.querySelector("#search-input");
+
+    input_box.addEventListener("keypress",()=>{
+
+        getdata(event);
+
+    });
+
+    let img = document.querySelector("#profile-img");
+
+    const getdata = async (e) => {
+       try{
+        if(e.code==="Enter")
+        { 
+
+            let input = input_box.value;
+            console.log(input);
+            let res = await fetch(`https://api.github.com/users/${input}/repos`);
+            let data = await res.json();
+            console.log(data);
+            let profile = await fetch(`https://api.github.com/users/${input}`);
+            let userdata = await profile.json();
+           // console.log(userdata);
+            img.src=data[0].owner.avatar_url;
+            //window.location.href = `https://api.github.com/users/${input}`;
+            display(userdata);
+            display2(data);
+        }
+       
+       }
+       catch (err) {
+           console.log(err);
+       }
+    }
+
+  const display = (data) => {
+
+    let profile = document.getElementById('profileinfo');
+    profile.innerHTML = null;
+
+    let img = document.createElement('img');
+    img.src= data.avatar_url;
+     let h3 = document.createElement('h3');
+     h3.innerText=data.name;
+     let h4 = document.createElement('h4');
+     h4.innerText=data.login;
+     let button = document.createElement('button');
+     button.innerText = "FOLLOW";
+     let div = document.createElement('div');
+     let follower = document.createElement('p');
+     follower.innerText = data.followers+" Followers";
+     let following = document.createElement('p');
+     following.innerText = data.following + " Following";
+     let p = document.createElement('p');
+     p.innerText = data.location;
+     let p2 = document.createElement('p');
+     p2.innerText = data.blog;
+
+     div.append(follower ,following);
+    profileinfo.append(img,h3,h4,button,div,p,p2);
+
+  }
+
+   const display2 = (data) => {
+      let repo = document.querySelector("#repo");
+      repo.innerHTML=null;
+      data.forEach( (el) =>{
+        let div = document.createElement("div");
+        let box1 = document.createElement("div");
+        box1.setAttribute("id",'one');
+        let h2 = document.createElement("h2");
+        h2.innerText = el.name;
+        let button = document.createElement("button");
+        button.innerText = el.visibility;
+        box1.append(h2,button);
+        let box2 = document.createElement("div");
+        let p=document.createElement("p");
+        p.innerText = el.language;
+        let update = document.createElement("p");
+        let btn  = document.createElement("button");
+        btn.innerText = "STAR";
+        update.innerText = el.updated_at;
+        box2.setAttribute("id",'two');
+        box2.append(p,update,btn);
+
+        div.append(box1,box2);
+        repo.append(div);
+
+      })
+   }
+
+
+</script>
