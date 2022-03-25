@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style> 
+        /* i{
+            width:30px;
+            height:30px;
+            color:black;
+        } */
+
+        #nav{
+            background-color:rgb(218, 7, 7);
+            display:flex;
+            justify-content:space-bet;
+        }
+        #home{
+            display: grid;
+            grid-template-columns:repeat(3,1fr) ;
+            grid-template-rows: auto;gap:30px ;
+        }
+        #Searchresult{
+            display: grid;
+            grid-template-columns:repeat(3,1fr) ;
+            grid-template-rows: auto;gap:30px ;
+        }
+        input{
+            width:400px
+        }
+        i{
+            color: beige;
+            width:100px;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/d186e160db.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="nav">
+        <i class="fa-solid fa-bars"></i>
+        <i class="fa-brands fa-youtube"></i>
+        <input type="text" id="search">
+        <button onclick="search()">Search</button> 
+        <i class="fa-solid fa-camera-movie"></i>
+        <i class="fa-solid fa-border-none"></i>
+        <i class="fa-solid fa-bell"></i>
+        <i class="fa-solid fa-face-glasses"></i>
+        
+    </div>
+    <div id="Searchresult"></div>
+    <div id="home"></div>
+</body>
+</html>
+<script>    
+let home = document.querySelector("#home");
+const search = async () => {
+        try{
+            let input = document.getElementById("search").value;
+            let res = await fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${input}&key=AIzaSyCSWuaRr7rWNJJ9YsSroxCvbf9K_PBUHus&maxResults=50`);
+            let data = await res.json();
+            
+            let videos = data.items;
+            console.log(videos);
+            //return videos;
+            appendvideos(videos);
+        }
+        catch(e){
+           console.log(e);
+        }
+    }
+    const appendvideos = (data) => {
+        document.getElementById("Searchresult").innerHTML=null;
+       try{
+        data.forEach((el) => {
+            let div = document.createElement("div");
+            div.addEventListener("click",()  => {
+            take(el);
+            });
+            let p=document.createElement("p");
+            let img = document.createElement("img");
+            img.src = el.snippet.thumbnails.medium.url;
+           // p.innerText = el.snippet.title;
+            p.innerText=el.snippet.title;
+           // p.innerText=snippet.title;
+           // let iframe = document.createElement("iframe");
+            //iframe.src= `https://www.youtube.com/embed/${el.id.videoId}`
+           // iframe.src= `https://www.youtube.com/embed/${id.videoId}`
+          // iframe.src= `https://www.youtube.com/embed/${videoId}`
+            div.append(p,img);
+            document.getElementById("Searchresult").append(div);
+
+
+        });
+       }
+       catch(e){
+           console.log(e);
+       }
+    };
+//home
+let getdata1= async () => {
+    let input = document.getElementById("search").value;
+    let res = await fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&key=AIzaSyCSWuaRr7rWNJJ9YsSroxCvbf9K_PBUHus&maxResults=20&chart=mostPopular&regionCode=IN`);
+    let data = await res.json();
+    let videos = data.items;
+    display(videos);
+    console.log(data);
+    
+}
+getdata1();
+
+let display = (data) => {
+    home.innerHTML= null;
+    data.forEach((el) => {
+        let div = document.createElement("div");
+        div.addEventListener("click",()  => {
+            take(el);
+        });
+        let p=document.createElement("p");
+        p.innerText = el.snippet.title;
+        let img = document.createElement("img");
+        img.src = el.snippet.thumbnails.medium.url;
+        // let iframe = document.createElement("iframe");
+        // iframe.src= `https://www.youtube.com/embed/${el.id.videoId}`;
+        div.append(p,img);
+        document.getElementById("home").append(div);
+    });
+}
+
+let take = (ele) => {
+    console.log(ele)
+    localStorage.setItem("video",JSON.stringify(ele));
+    window.location.href="./video.html";
+
+}
+
+
+</script>

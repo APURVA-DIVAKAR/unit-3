@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+       #view {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        padding-top: 62.5%; 
+        }
+        iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 80%;
+        }
+    </style>
+</head>
+<body>
+    <div id="view"></div>
+</body>
+</html>
+<script>  
+    
+let data = JSON.parse(localStorage.getItem("video"));
+console.log(data);
+
+document.getElementById("view").innerHTML = null;
+let iframe = document.createElement("iframe");
+iframe.src = `https://www.youtube.com/embed/${data.id.videoId}`;
+iframe.allow="fullscreen";
+let h4=document.createElement("h4");
+h4.innerText=data.snippet.title;
+let p = document.createElement("p");
+p.innerText = data.snippet.publishTime;
+let p1 = document.createElement("p");
+p1.innerText = data.snippet.description;
+document.getElementById("view").append(iframe,h4,p,p1);
+//document.getElementById("view").append();
+
+
+</script>
